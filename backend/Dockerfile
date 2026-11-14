@@ -10,7 +10,8 @@ COPY app ./app
 COPY migrations ./migrations
 COPY alembic.ini ./
 
-RUN python -m pip install --no-cache-dir ".[ml]"
+RUN python -m pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu "torch==2.15.0+cpu" && \
+    python -m pip install --no-cache-dir ".[ml]"
 
 EXPOSE 8000
 CMD ["sh", "-c", "alembic upgrade head && python -m app.seed && uvicorn app.main:app --host 0.0.0.0 --port 8000"]

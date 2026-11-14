@@ -1,6 +1,7 @@
 from functools import lru_cache
 from typing import Literal
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -17,6 +18,12 @@ class Settings(BaseSettings):
     cors_origins: str = "http://localhost:5173"
 
     model_config = SettingsConfigDict(env_file=(".env", "../.env"), env_file_encoding="utf-8", extra="ignore")
+
+    @field_validator("embedding_dimensions", mode="before")
+    @classmethod
+    def parse_embedding_dimensions(cls, value: object) -> int:
+        # Environment variables arrive as strings, while this model dimension is fixed.
+        return int(value)
 
     @property
     def allowed_origins(self) -> list[str]:

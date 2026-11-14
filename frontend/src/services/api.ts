@@ -1,7 +1,7 @@
 import type { AuthResponse, SearchHistoryEntry, SearchResponse, Track, User } from "../types";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000/api";
-const TOKEN_KEY = "moodify.access-token";
+const TOKEN_KEY = "melodia.access-token";
 
 export function getToken(): string | null {
   return localStorage.getItem(TOKEN_KEY);
@@ -22,7 +22,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   try {
     response = await fetch(`${API_URL}${path}`, { ...init, headers });
   } catch {
-    throw new Error("Не удалось связаться с сервером. Запустите Moodify и повторите попытку.");
+    throw new Error("Не удалось связаться с сервером. Запустите Melodia и повторите попытку.");
   }
   if (response.status === 204) return undefined as T;
   if (!response.ok) {

@@ -2,15 +2,15 @@ services:
   db:
     image: pgvector/pgvector:pg16
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-moodify}
-      POSTGRES_USER: ${POSTGRES_USER:-moodify}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-moodify_local}
+      POSTGRES_DB: ${POSTGRES_DB:-melodia}
+      POSTGRES_USER: ${POSTGRES_USER:-melodia}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-melodia_local}
     ports:
       - "5432:5432"
     volumes:
-      - moodify_db:/var/lib/postgresql/data
+      - melodia_db:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-moodify} -d ${POSTGRES_DB:-moodify}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-melodia} -d ${POSTGRES_DB:-melodia}"]
       interval: 5s
       timeout: 5s
       retries: 12
@@ -19,7 +19,7 @@ services:
     build:
       context: ./backend
     environment:
-      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-moodify}:${POSTGRES_PASSWORD:-moodify_local}@db:5432/${POSTGRES_DB:-moodify}
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-melodia}:${POSTGRES_PASSWORD:-melodia_local}@db:5432/${POSTGRES_DB:-melodia}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY:-change-this-development-secret-before-deploying}
       EMBEDDING_MODEL: ${EMBEDDING_MODEL:-sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2}
       EMBEDDING_DIMENSIONS: ${EMBEDDING_DIMENSIONS:-384}
@@ -28,7 +28,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - moodify_hf_cache:/root/.cache/huggingface
+      - melodia_hf_cache:/root/.cache/huggingface
     depends_on:
       db:
         condition: service_healthy
@@ -51,5 +51,5 @@ services:
         condition: service_healthy
 
 volumes:
-  moodify_db:
-  moodify_hf_cache:
+  melodia_db:
+  melodia_hf_cache:

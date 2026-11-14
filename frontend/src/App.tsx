@@ -133,8 +133,8 @@ export default function App() {
   return (
     <main className="app-shell" id="top">
       <header className="topbar">
-        <a className="brand" href="#top" onClick={() => openView("search")} aria-label="Moodify — главная">
-          <span className="brand-mark">♫</span><span>moodify</span>
+        <a className="brand" href="#top" onClick={() => openView("search")} aria-label="Melodia — главная">
+          <span className="brand-mark">♫</span><span>melodia</span>
         </a>
         <nav className="main-nav" aria-label="Основная навигация">
           {(["search", "catalog", "favorites", "history"] as View[]).map((item) => (
@@ -164,7 +164,7 @@ export default function App() {
             <div className="hero-glow" aria-hidden="true" />
             <p className="eyebrow">МУЗЫКА, КОТОРАЯ ПОНИМАЕТ НАСТРОЕНИЕ</p>
             <h1>Опиши момент.<br /><span>Найди свой звук.</span></h1>
-            <p className="intro">Расскажи, какую музыку хочется услышать. Moodify сопоставит смысл запроса, эмоции и жанр.</p>
+            <p className="intro">Расскажи, какую музыку хочется услышать. Melodia сопоставит смысл запроса, эмоции и жанр.</p>
             <form className="search-form" onSubmit={(event) => { event.preventDefault(); void search(); }}>
               <span className="search-icon" aria-hidden="true">⌕</span>
               <label className="sr-only" htmlFor="music-query">Опиши желаемую музыку</label>
@@ -239,7 +239,7 @@ export default function App() {
       )}
 
       <footer className="footer">
-        <a className="footer-brand" href="#top"><span className="brand-mark">♫</span> moodify</a>
+        <a className="footer-brand" href="#top"><span className="brand-mark">♫</span> melodia</a>
         <span>Интеллектуальный поиск музыки · Курсовой проект</span>
         <a href="http://localhost:8000/docs" target="_blank" rel="noreferrer">API документация ↗</a>
       </footer>

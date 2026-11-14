@@ -1,4 +1,4 @@
-"""Create the initial Moodify schema.
+"""Create the initial Melodia schema.
 
 Revision ID: 0001_initial
 Revises:

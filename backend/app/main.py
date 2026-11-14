@@ -32,4 +32,4 @@ app.include_router(history_router, prefix="/api")
 
 @app.get("/api/health", tags=["service"])
 def health() -> dict[str, str]:
-    return {"status": "ok", "service": "moodify-api", "version": "1.0.0"}
+    return {"status": "ok", "service": "melodia-api", "version": "1.0.0"}

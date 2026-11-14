@@ -1,1 +1,1 @@
-"""Moodify backend application."""
+"""Melodia backend application."""

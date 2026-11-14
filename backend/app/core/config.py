@@ -5,9 +5,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    app_name: str = "Moodify"
+    app_name: str = "Melodia"
     environment: str = "development"
-    database_url: str = "postgresql+psycopg://moodify:moodify_local@localhost:5432/moodify"
+    database_url: str = "postgresql+psycopg://melodia:melodia_local@localhost:5432/melodia"
     jwt_secret_key: str = "change-this-development-secret-before-deploying"
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 60

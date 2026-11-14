@@ -1,0 +1,1 @@
+"""Moodify backend application."""

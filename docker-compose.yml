@@ -1,0 +1,55 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-moodify}
+      POSTGRES_USER: ${POSTGRES_USER:-moodify}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-moodify_local}
+    ports:
+      - "5432:5432"
+    volumes:
+      - moodify_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-moodify} -d ${POSTGRES_DB:-moodify}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  api:
+    build:
+      context: ./backend
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-moodify}:${POSTGRES_PASSWORD:-moodify_local}@db:5432/${POSTGRES_DB:-moodify}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-change-this-development-secret-before-deploying}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2}
+      EMBEDDING_DIMENSIONS: ${EMBEDDING_DIMENSIONS:-384}
+      EMOTION_MODEL: ${EMOTION_MODEL:-Aniemore/rubert-tiny2-russian-emotion-detection}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
+    ports:
+      - "8000:8000"
+    volumes:
+      - moodify_hf_cache:/root/.cache/huggingface
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 45s
+
+  frontend:
+    build:
+      context: ./frontend
+    environment:
+      VITE_API_URL: http://localhost:8000/api
+    ports:
+      - "5173:5173"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  moodify_db:
+  moodify_hf_cache:

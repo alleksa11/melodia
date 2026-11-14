@@ -31,13 +31,14 @@ export default function App() {
   const [authOpen, setAuthOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
+  const [catalogLoaded, setCatalogLoaded] = useState(false);
   const [error, setError] = useState("");
 
   const favoriteIds = useMemo(() => new Set(favorites.map((track) => track.id)), [favorites]);
   const catalogGenres = useMemo(() => [...new Set(catalog.map((track) => track.genre))].sort(), [catalog]);
 
   useEffect(() => {
-    api.tracks().then(setCatalog).catch(() => undefined);
+    api.tracks().then(setCatalog).catch(() => undefined).finally(() => setCatalogLoaded(true));
     if (!getToken()) return;
     api.me().then(setUser).catch(() => saveToken(null));
     api.favorites().then(setFavorites).catch(() => undefined);
@@ -208,7 +209,7 @@ export default function App() {
             {loading && <div className="loading-panel"><span className="spinner large" /> Сопоставляем смысл и эмоциональные характеристики…</div>}
             {!loading && searchResult?.results.length === 0 && <EmptyState title="Пока нет совпадений" copy="Попробуй переформулировать запрос или снять жанровый фильтр." />}
             {!loading && searchResult && searchResult.results.length > 0 && renderTracks(searchResult.results)}
-            {!loading && !searchResult && <div className="empty-state welcome-state"><div className="sound-orbit">♫</div><div><h3>Расскажи, что хочется услышать</h3><p>Подборка будет учитывать смысл описания и эмоциональный профиль композиции.</p></div></div>}
+            {!loading && !searchResult && <div className="empty-state welcome-state"><div className="sound-orbit">♫</div><div><h3>Расскажи, что хочется услышать</h3><p>{catalogLoaded && catalog.length === 0 ? "Каталог пока пуст. Импортируй свои композиции из CSV, чтобы Melodia могла искать по ним." : "Подборка будет учитывать смысл описания и эмоциональный профиль композиции."}</p></div></div>}
           </section>
         </>
       ) : (
@@ -223,7 +224,7 @@ export default function App() {
           </div>
           {error && <div className="notice error"><span>!</span><p>{error}</p></div>}
           {pageLoading && <div className="loading-panel"><span className="spinner large" /> Загружаем…</div>}
-          {!pageLoading && view === "catalog" && (catalog.length ? renderTracks(catalog) : <EmptyState title="Каталог пока пуст" copy="Добавь композиции в базу и они появятся здесь." />)}
+          {!pageLoading && view === "catalog" && (catalog.length ? renderTracks(catalog) : <EmptyState title="Каталог пока пуст" copy="Импортируй свои композиции из CSV, чтобы они появились здесь." />)}
           {!pageLoading && view === "favorites" && (favorites.length ? renderTracks(favorites) : <EmptyState title="Избранное пока пусто" copy="Нажми на сердечко у понравившейся композиции, чтобы сохранить её." />)}
           {!pageLoading && view === "history" && (
             history.length ? <div className="history-list">{history.map((item) => (

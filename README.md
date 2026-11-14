@@ -12,7 +12,7 @@
 - Семантические embeddings модели `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` (384 измерения).
 - Русский анализ эмоций через multi-label модель RuBERT; лексический классификатор дополняет отсутствующие у модели категории `calm` и `romance`.
 - Резервный текстовый поиск, когда embedding-модель не загрузилась. Интерфейс явно показывает этот режим.
-- 16 синтетических демонстрационных композиций. Это тестовые записи, а не реальные аудиотреки; ссылки на прослушивание можно загрузить для собственного каталога.
+- Каталог изначально пустой: проект не содержит синтетических музыкальных записей. Композиции загружаются из подготовленного пользователем CSV-файла.
 
 ## Архитектура
 
@@ -68,7 +68,7 @@ docker compose up --build
 
 1. Запустить PostgreSQL с pgvector: `docker compose up -d db`.
 2. В `backend` создать виртуальное окружение Python 3.11+ и установить `python -m pip install -e ".[ml]"`.
-3. Из папки `backend` выполнить `alembic upgrade head`, затем `python -m app.seed`.
+3. Из папки `backend` выполнить `alembic upgrade head`.
 4. Запустить API: `uvicorn app.main:app --reload`.
 5. В `frontend` выполнить `npm install` и `npm run dev`.
 
@@ -92,13 +92,15 @@ docker compose up --build
 
 ## Загрузка собственного каталога
 
-Шаблон CSV находится в `data/catalog-template.csv`. Обязательные столбцы: `title`, `artist`, `genre`, `description`. Необязательны `listening_url` и оценки `joy`, `sadness`, `calm`, `energy`, `romance`, `anxiety` от 0 до 1.
+Каталог при запуске пуст. Заготовка CSV с заголовками столбцов находится в `data/catalog-template.csv`. Заполни её реальными данными или положи свой CSV в папку `data`. Обязательные столбцы: `title`, `artist`, `genre`, `description`. Необязательны `listening_url` и оценки `joy`, `sadness`, `calm`, `energy`, `romance`, `anxiety` от 0 до 1.
 
-После запуска базы CSV импортируется из папки `backend`:
+При запуске через Docker папка `data` доступна API-контейнеру как `/data`. Импорт из корня репозитория:
 
 ```powershell
-python -m app.import_catalog ..\data\catalog-template.csv
+docker compose exec api python -m app.import_catalog /data/catalog-template.csv
 ```
+
+При локальном запуске без контейнеров выполни ту же команду из папки `backend`, указав путь `..\data\catalog-template.csv`.
 
 При изменении описания embedding композиции пересоздаётся при следующем поиске. Перед загрузкой аудио и ссылок нужно проверить лицензию и право на распространение; Melodia хранит только предоставленные метаданные и ссылку.
 

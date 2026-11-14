@@ -1,3 +1,5 @@
+name: melodia
+
 services:
   db:
     image: pgvector/pgvector:pg16
@@ -29,6 +31,7 @@ services:
       - "8000:8000"
     volumes:
       - melodia_hf_cache:/root/.cache/huggingface
+      - ./data:/data:ro
     depends_on:
       db:
         condition: service_healthy

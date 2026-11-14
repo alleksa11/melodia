@@ -19,13 +19,10 @@ type TrackCardProps = {
 
 export function TrackCard({ track, index, favorite, onToggleFavorite, authenticated }: TrackCardProps) {
   const scoreParts = track.score_breakdown;
-  const scoreDetails = scoreParts
-    ? [
-        scoreParts.semantic !== null && scoreParts.semantic !== undefined ? ["смысл", scoreParts.semantic] as const : null,
-        scoreParts.lexical !== null && scoreParts.lexical !== undefined ? ["слова", scoreParts.lexical] as const : null,
-        scoreParts.emotion !== null && scoreParts.emotion !== undefined ? ["эмоции", scoreParts.emotion] as const : null,
-      ].filter((part): part is readonly [string, number] => part !== null)
-    : [];
+  const scoreDetails: Array<readonly [string, number]> = [];
+  if (scoreParts?.semantic != null) scoreDetails.push(["смысл", scoreParts.semantic]);
+  if (scoreParts?.lexical != null) scoreDetails.push(["слова", scoreParts.lexical]);
+  if (scoreParts?.emotion != null) scoreDetails.push(["эмоции", scoreParts.emotion]);
   const emotions = (Object.entries(track.emotion_scores ?? {}) as [EmotionName, number][])
     .filter(([, value]) => value >= 0.35)
     .sort((a, b) => b[1] - a[1])
